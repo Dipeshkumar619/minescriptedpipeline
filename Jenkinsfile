@@ -1,14 +1,15 @@
 node{
     stage('Build'){
-        ws('/var/lib/jenkins/workspace/nodeDockerCustomWorkspace') {
-            def mavenImage =  docker.withRegistry('https://quay.io','dipesh_gupta_ak'){
-                docker.image('quay.io/dipesh_gupta_ak/myfirstrepo:latest').inside {
-                    sh 'printenv'
-                }
-            }
-
-
+		checkout([$class: 'GitSCM', 
+		branches: [[name: 'dockerfile']], 
+		extensions: [], 
+		userRemoteConfigs: [[credentialsId: 'githubapi', url: 'https://github.com/Dipeshkumar619/minescriptedpipeline.git']]])
+        
+        def myCustomUbuntuImage = docker.build("my-ubuntu:latest")
+        mycustomUbuntuImage.inside{
+            sh 'cat /etc/lsb-release'
         }
+
 
     }
 }
